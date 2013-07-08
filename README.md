@@ -7,14 +7,15 @@ Finished tests:
 * jQuery loaded from CDN
 * Google Fonts loaded locally
 * Google Fonts loaded from CDN
+* 2880x1800 pixel JPEG image
 
 Tests we need:
 * HTML file with small stylesheet, small script file
 * HTML file with ten small stylesheets, ten small script files
+* jQuery + jQuery UI (all of it) loaded locally
 * Google Fonts loaded locally, base64-encoded straight into the stylesheet
 * TypeKit fonts loaded from CDN
-* 2880x1800 pixel JPEG image, 50% compressed
-* 1136x640 pixel JPEG image, 50% compressed
+* 1136x640 pixel JPEG image
 * Facebook like box
 * 36 small avatars on the same page
 * Twitter Bootstrap, default setup, everything included
