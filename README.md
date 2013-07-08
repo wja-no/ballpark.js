@@ -8,6 +8,7 @@ Finished tests:
 * Google Fonts loaded locally
 * Google Fonts loaded from CDN
 * 2880x1800 pixel JPEG image
+* Twitter Bootstrap, default setup, everything included
 
 Tests we need:
 * HTML file with small stylesheet, small script file
@@ -18,6 +19,3 @@ Tests we need:
 * 1136x640 pixel JPEG image
 * Facebook like box
 * 36 small avatars on the same page
-* Twitter Bootstrap, default setup, everything included
-
-
