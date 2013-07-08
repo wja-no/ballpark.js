@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Droid Sans';
+      font-style: normal;
+        font-weight: 400;
+          src: local('Droid Sans'), local('DroidSans'), url(./DroidSans.ttf) format('woff');
+        }
+html {
+  font-family: 'Droid Sans'
+}
