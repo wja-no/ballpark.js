@@ -6,6 +6,8 @@ Finished tests:
 * jQuery loaded locally
 * jQuery loaded from CDN
 * jQuery + jQuery UI (all of it) loaded locally
+* Background-images set in CSS, using files
+* Background-images set in CSS, base64-encoded in the stylesheet 
 * Custom iconfont with 300 chars, import entire font, use subset of 50 chars.
 * Custom iconfont with 50 chars, use entire font.
 * Facebook like box
