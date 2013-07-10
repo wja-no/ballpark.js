@@ -12,6 +12,8 @@ Finished tests:
 * Google Fonts loaded locally
 * Google Fonts loaded from CDN
 * Google Fonts loaded locally, base64-encoded straight into the stylesheet
+* HTML file with small stylesheet, small script file
+* HTML file with ten small stylesheets, ten small script files
 * 1136x640 pixel JPEG image
 * 2880x1800 pixel JPEG image
 * Twitter Bootstrap, default setup, everything included
@@ -20,5 +22,6 @@ Finished tests:
   - color 48x48
 
 Tests we need:
-* HTML file with small stylesheet, small script file
-* HTML file with ten small stylesheets, ten small script files
+
+Composite, worst-case demonstration
+Composite, best-case demonstration
