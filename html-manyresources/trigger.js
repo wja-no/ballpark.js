@@ -1,3 +1,3 @@
-var result = libs.sum_to(100);
+var result = lib1(100);
 var element = document.querySelector("h1 + p");
 element.innerHTML = result;
