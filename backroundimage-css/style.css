@@ -1,0 +1,115 @@
+p {
+  background-position: top left;
+  background-repeat: no-repeat;
+  height: 48px;
+  line-height: 48px;
+  padding-left: 60px; 
+}
+
+p.base {
+  background-image: url('base.png');
+}
+p.box {
+  background-image: url('box.png');
+}
+p.bubble {
+  background-image: url('bubble.png');
+}
+p.cancel {
+  background-image: url('cancel.png');
+}
+p.chrome {
+  background-image: url('chrome.png');
+}
+p.color {
+  background-image: url('color.png');
+}
+p.delicious {
+  background-image: url('delicious.png');
+}
+p.download {
+  background-image: url('download.png');
+}
+p.edit {
+  background-image: url('edit.png');
+}
+p.facebook {
+  background-image: url('facebook.png');
+}
+p.favorite {
+  background-image: url('favorite.png');
+}
+p.firefox {
+  background-image: url('firefox.png');
+}
+
+p.flickr {
+  background-image: url('flickr.png');
+}
+
+p.globe {
+  background-image: url('globe.png');
+}
+p.help {
+  background-image: url('help.png');
+}
+p.icq {
+  background-image: url('icq.png');
+}
+p.idea {
+  background-image: url('idea.png');
+}
+p.image {
+  background-image: url('image.png');
+}
+p.info {
+  background-image: url('info.png');
+}
+p.itunes {
+  background-image: url('itunes.png');
+}
+p.label {
+  background-image: url('label.png');
+}
+p.mac {
+  background-image: url('mac.png');
+}
+p.mail {
+  background-image: url('mail.png');
+}
+p.miranda {
+  background-image: url('miranda.png');
+}
+p.monitor {
+  background-image: url('monitor.png');
+}
+p.note {
+  background-image: url('note.png');
+}
+p.refresh {
+  background-image: url('refresh.png');
+}
+p.rss {
+  background-image: url('rss.png');
+}
+p.search {
+  background-image: url('search.png');
+}
+p.skype {
+  background-image: url('skype.png');
+}
+p.trush_empty {
+  background-image: url('trush_empty.png');
+}
+
+p.trush_full {
+  background-image: url('trush_full.png');
+}
+
+p.twitter {
+  background-image: url('twitter.png');
+}
+
+p.user {
+  background-image: url('user.png');
+}
