@@ -23,5 +23,5 @@ Finished tests:
 
 Tests we need:
 
-Composite, worst-case demonstration
-Composite, best-case demonstration
+* Composite, worst-case demonstration
+* Composite, best-case demonstration
