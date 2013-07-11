@@ -1,1 +1,1 @@
-SetEnv no-gzip
+SetEnv no-gzip no-vary
