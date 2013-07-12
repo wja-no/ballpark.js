@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <meta charset='utf-8'>
-<title>Basic HTML file, no dependencies</title>
+<title>Worst practice composite test</title>
 <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
 <link rel='stylesheet' href='./style.css'>
 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 <script src="./get_picture"></script>
-
-<p>This test case is an almost empty HTML file, with no dependencies. This
-forms the baseline.
+<p> Composite test combining several performance-impeding desitions. See bottom for details.
 <p class='main_frame'> Moar Mountains! Look at this amazing mountain!  
 <p class='iconrow'>&#xe000; &#xe001; &#xe002; &#xe003; &#xe004; &#xe005; &#xe006; &#xe007; &#xe008; &#xe009;
+<ul>
+<li>Three uncompressed, non-encoded background images are used:
+<ol>
+<li>Backround image in html element: <a href='http://subtlepatterns.com/patterns/'>Tweed</a> by Simon Leo.</li>
+<li>Backround image in body element: <a href='http://subtlepatterns.com/patterns/'>Light paper fibers</a> by Jorge Fuentes</li>
+<li>Backround image in main_frame element: <a href='http://subtlepatterns.com/patterns/'>Carbon fibre</a> by Atle Mo</li>
+</ol>
+</li>
+<li>Google Fonts loaded from CDN.</li>
+<li>Gzip compression is turned off via an .htaccess directive.</li>
+<li>Mountain image is loaded via javascript after entire document is loaded (private photo used with permission).</li>
+<li>300-piece Iconfont is loaded in its entirety, without base64-encoding, and only a subset of 10 characters are used. The icons are provided by <a href="http://icomoon.io">IcoMoon</a> subject to the <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 License</a>.</li>
+</ul>
 
