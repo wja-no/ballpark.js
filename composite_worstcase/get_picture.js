@@ -1,0 +1,1 @@
+$('#result').load('image.html');
