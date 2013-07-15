@@ -19,6 +19,7 @@ Finished tests:
 * 1136x640 pixel JPEG image
 * 2880x1800 pixel JPEG image
 * Twitter Bootstrap, default setup, everything included
+* Twitter Bootstrap, default setup, everything included, minified JS
 * 36 small avatars on the same page: 
   - black and white 32x32
   - color 48x48
