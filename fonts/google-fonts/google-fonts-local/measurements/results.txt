@@ -1,0 +1,21 @@
+ 1   115 ms (load: 50 ms, DOMContentLoaded: 37 ms)
+ 2    51 ms (load: 30 ms, DOMContentLoaded: 19 ms)
+ 3    54 ms (load: 27 ms, DOMContentLoaded: 18 ms)
+ 4    56 ms (load: 32 ms, DOMContentLoaded: 17 ms)
+ 5    67 ms (load: 40 ms, DOMContentLoaded: 24 ms)
+ 6    50 ms (load: 30 ms, DOMContentLoaded: 18 ms)
+ 7    62 ms (load: 41 ms, DOMContentLoaded: 20 ms)
+ 8    54 ms (load: 29 ms, DOMContentLoaded: 18 ms)
+ 9    56 ms (load: 33 ms, DOMContentLoaded: 17 ms)
+10    54 ms (load: 31 ms, DOMContentLoaded: 19 ms)
+11    56 ms (load: 30 ms, DOMContentLoaded: 19 ms)
+12    58 ms (load: 36 ms, DOMContentLoaded: 19 ms)
+ 
+
+Worst: 1, 115 ms
+Best:  6, 50 ms
+
+arithmetic mean (extreme values taken out): 56.800000
+median (extreme values taken out): 56.000000
+
+All tests run from an Apple Macbook Pro 4.1, running Mac OS X 10.6.8, at the University of Oslo on July 16th, 2013.

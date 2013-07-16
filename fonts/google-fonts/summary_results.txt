@@ -1,0 +1,25 @@
+=== Using Google Fonts stored on the same server ===
+
+Worst:  115 ms
+Best:   50 ms
+
+arithmetic mean (extreme values taken out): 56.8
+median (extreme values taken out): 56
+
+
+=== Using Google Fonts from CDN ===
+
+Worst:  588 ms
+Best:   127 ms
+
+arithmetic mean (extreme values taken out): 168.6
+median (extreme values taken out): 161
+mode: 159
+
+=== Using base64-encoded Google Fonts stored on the same server ===
+
+Worst:  87 ms
+Best:   61 ms
+
+arithmetic mean (extreme values taken out) : 70.9 ms
+median (extreme values taken out) : 71 ms
