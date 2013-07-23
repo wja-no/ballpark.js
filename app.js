@@ -5,24 +5,20 @@
   };
 
   var result = {};
-  var testpages = new Array();
   var iterations = 5;
   var iframe = document.getElementsByTagName('iframe')[0];
 
-  testpages.push('fonts/google-fonts/google-fonts-base64/index.html');
-  testpages.push('fonts/google-fonts/google-fonts-cdn/index.html');
-  testpages.push('fonts/google-fonts/google-fonts-local/index.html');
 
-  for(var i = 0; i < testpages.length; i++){
-    result[testpages[i]] = new Array();
+  for(var i = 0; i < TESTS.length; i++){
+    result[TESTS[i]] = new Array();
   }
 
   var current;
   var queue = new Array();
 
   for(var i = 0; i < iterations; i++){
-    for(var j = 0; j < testpages.length; j++){
-      queue.push(testpages[j]);
+    for(var j = 0; j < TESTS.length; j++){
+      queue.push(TESTS[j]);
     }
   }
 
@@ -32,7 +28,7 @@
   }
 
   function printResult(){
-    console.log(result[testpages[0]])
+    console.log(result[TESTS[0]])
   }
 
   function testNext(value){
