@@ -5,3 +5,9 @@
 <link rel='stylesheet' href='font.css'>
 
 <p>This page loads Droid Sans from the Google Webfonts server.
+<script> 
+setTimeout(function (){
+  var result = performance.timing.loadEventStart - performance.timing.requestStart;
+  parent.postMessage(result, "*")
+}, 1); 
+</script>
