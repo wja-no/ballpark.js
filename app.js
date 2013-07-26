@@ -74,6 +74,12 @@
           results[current][subcategory] = array;
         }
       }else for(subcategory in incoming){
+        console.log("pushing result")
+        console.log(incoming[subcategory]);
+        console.log("to results[current]subcategory] where current is");
+        console.log(current);
+        console.log("And subcategory is");
+        console.log(subcategory);
         results[current][subcategory].push(incoming[subcategory]);
       }
     }
@@ -83,10 +89,6 @@
       if(queue[0] === undefined) finish(results);
       else {
         current = queue.pop();
-        console.log("current in post is");
-        console.log(current);
-        console.log("calling runner with");
-        console.log(data[current]);
         runner(data[current].concat(), current, post)
       }
     }
@@ -109,6 +111,7 @@
       var  category = result[name];
       for(var testname in category){
         raw_html += "<tr><td>"+testname+"</td>";
+        console.log("Printing array of results from "+testname);
         raw_html += "<td>"+buildReport(category[testname])+"</td></tr>";
       }
     }
