@@ -24,8 +24,8 @@
       iframe.src = currString;
     }
 
-    function catchAndContinue(value){
-      result[current].push(value.data);
+    function catchAndContinue(message){
+      result[current] = message.data;
       if(queue.length === 0){
         finalize(result); 
       }
@@ -47,20 +47,8 @@
       result = {};
 
       //Initialize a new queue with /iterations/ test-tokens per tests.
-      queue = new Array((tests.length*iterations));
+      queue = tests;
 
-      for(var i = 0; i < tests.length; i++){
-
-        //Create an array for the results, and name this array after the test
-        result[tests[i]] = new Array();
-
-        //Add /iterations/ of the test to the queue
-        for(var j = 0; j < iterations; j++){
-          queue[iterations*i + j] = tests[i];
-        }
-      }
-
-      //Start the iteration
       testNext();
     }
   }
@@ -71,25 +59,45 @@
     var queue = new Array();
     var current;
 
-    for(var category in data){
-      results[category] = {};
-      queue.push(category);
-    }
-
-    function post(incoming_result){
-      results[current] = incoming_result;
-      if(queue[0] === undefined) finish(results);
-      else {
-        current = queue.pop();
-        runner(data[current], current, post)
+    for(var i = 0; i < iterations; i++){
+      for(category in data){
+        queue.push(category);
       }
     }
 
+    function buildResult(incoming){
+      if(results[current] === undefined){
+        results[current] = incoming;
+        for(var subcategory in results[current]){
+          var array = new Array();
+          array.push(incoming[subcategory]);
+          results[current][subcategory] = array;
+        }
+      }else for(subcategory in incoming){
+        results[current][subcategory].push(incoming[subcategory]);
+      }
+    }
+
+    function post(incoming_result){
+      buildResult(incoming_result);
+      if(queue[0] === undefined) finish(results);
+      else {
+        current = queue.pop();
+        console.log("current in post is");
+        console.log(current);
+        console.log("calling runner with");
+        console.log(data[current]);
+        runner(data[current].concat(), current, post)
+      }
+    }
+
+    console.log(queue);
     current = queue.pop();
-    runner(data[current], current, post);
+    runner(data[current].concat(), current, post);
   }
 
   function buildReport(array){
+    console.log(array);
     var naive_average = array.reduce(function(p, c, i, array){ return p+c })/array.length;
     return naive_average;
   }
