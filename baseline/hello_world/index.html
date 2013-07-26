@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<meta charset='utf-8'>
+<title>Basic HTML file, no dependencies</title>
+
+<p>This test case is an almost empty HTML file, with no dependencies. This
+forms the baseline.
+<script>
+document.onload = setTimeout(function(){
+  var timing = window.performance.timing;
+  var result = timing.loadEventStart - timing.requestStart;
+  parent.postMessage(result, "*");
+}, 0)
+</script>

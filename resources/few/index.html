@@ -6,3 +6,10 @@
 <h1>One HTML file, one stylesheet, one library script and a command script</h1>
 <p> Result of script posted here.
 <script src='trigger.js'></script>
+<script>
+document.onload = setTimeout(function(){
+  var timing = window.performance.timing;
+  var result = timing.loadEventStart - timing.requestStart;
+  parent.postMessage(result, "*");
+}, 0)
+</script>

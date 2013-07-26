@@ -20,7 +20,7 @@
     function testNext(){
       current = queue.pop();
       var currString = "./"+current_category+"/"+current+"/index.html";
-      console.log(currString);
+      console.log("attempting to load "+currString);
       iframe.src = currString;
     }
 
@@ -42,6 +42,9 @@
 
       finalize = callback;
       current_category = category;
+
+      //For every category, the Runners' result object must be reset.
+      result = {};
 
       //Initialize a new queue with /iterations/ test-tokens per tests.
       queue = new Array((tests.length*iterations));
@@ -78,7 +81,7 @@
       if(queue[0] === undefined) finish(results);
       else {
         current = queue.pop();
-        runner(data[current], post)
+        runner(data[current], current, post)
       }
     }
 
