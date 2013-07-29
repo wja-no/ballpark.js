@@ -1,4 +1,4 @@
-<FilesMatch ".(html|htm|js|css)$">
+<FilesMatch ".(html|htm|js|css|png)$">
 FileETag None
 <ifModule mod_headers.c>
 Header unset ETag
