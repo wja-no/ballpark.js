@@ -11,6 +11,13 @@
     var queue;
     var current_category;
 
+    var inner_window = iframe.contentWindow;
+
+    iframe.onload = setTimeout(function (){
+      var result = inner_window.performance.timing.loadEventStart - inner_window.performance.timing.requestStart;
+      inner_window.parent.postMessage(result, "*")
+    }, 100); 
+
     //We initialize a placeholder for the callee's callback-function.
     //We use an empty function so that JavaScript treats the variable as 
     //callable, although the actual function will be set later.
@@ -121,4 +128,5 @@
 
   process(data, Runner(iframe, window, iterations), present);
 
-} (TESTRUNNER.data, 10, document.getElementsByTagName('iframe')[0], window, document.getElementsByTagName('p')[0]));
+} (TESTRUNNER.data, 10, document.getElementsByTagName('iframe')[0], window,
+   document.getElementsByTagName('p')[0]));
