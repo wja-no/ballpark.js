@@ -38,9 +38,21 @@
 <p class="twitter"> Lorem Ipsum
 <p class="user"> Lorem Ipsum
 <script>
-document.onload = setTimeout(function(){
   var timing = window.performance.timing;
+  var interval;
+
+function postResult(){
+  if(timing.loadEventStart === 0) return;
+  else{
   var result = timing.loadEventStart - timing.requestStart;
   parent.postMessage(result, "*");
-}, 100)
+  clearInterval(interval);
+ }
+}
+
+function startPolling(){
+interval = setInterval(postResult, 10);
+}
+
+window.onload = startPolling();
 </script>
