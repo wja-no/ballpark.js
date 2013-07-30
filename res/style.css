@@ -18,24 +18,24 @@ a {
 p {
 	margin-bottom: 25px;
 }
-table.results {
+table {
   width: 575px;
 	line-height: 25px;
 	vertical-align: top;
 	float: left;
 }
-table.results th {
+table th {
 	font-weight: normal;
 	text-align: left;
 }
-table.results td:first-child {
+table td:first-child {
 	padding-left: 25px;
 	width: 275px;
 }
-table.results td + td {
+table td + td {
 	text-align: right;
 }
-table.results a {
+table a {
 	display: block;
 }
 tr:hover td {
@@ -44,12 +44,12 @@ tr:hover td {
 	line-height: 23px;
 }
 
-table.results tr span {
+table tr span {
 	color: rgb(150,150,150);
 	visibility: hidden;
 }
 
-table.results tr:hover span {
+table tr:hover span {
 	visibility: visible;
 }
 button {
@@ -69,10 +69,10 @@ article {
 	float: left;
 }
 
-
 iframe {
 	width: 575px;
 	height: 575px;
 	float: left;
 	border: 1px solid black;
+	display: none;
 }
