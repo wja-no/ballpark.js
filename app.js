@@ -1,4 +1,4 @@
-(function(data, iterations, iframe, window, paragraph){
+(function(data, iterations, iframe, window, paragraph, button){
 
   if(window.performance === undefined){
     paragraph.childNodes[0].data  = "Unfortunately, your browser does not support the Navigation Timing API";
@@ -49,6 +49,7 @@
       console.log(result[current]);
       if(queue.length === 0){
         console.log("finalizing");
+        iframe.class = "hidden";
         finalize(result); 
       }
       else testNext();
@@ -144,10 +145,14 @@
       }
     }
     raw_html += "</table>";
-    document.body.innerHTML = raw_html;
+    paragraph.innerHTML = raw_html;
   }
 
+  function engage(){
   process(data, Runner(iframe, window, iterations), present);
+  }
+
+  button.onclick = engage;
 
 } (TESTRUNNER.data, 10, document.getElementsByTagName('iframe')[0], window,
-   document.getElementsByTagName('p')[0]));
+   document.getElementsByTagName('p')[1], document.getElementsByTagName('button')[0]))
