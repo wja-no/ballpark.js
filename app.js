@@ -125,9 +125,8 @@
   }
 
   function buildReport(array){
-    console.log(array);
     var naive_average = array.reduce(function(p, c, i, array){ return p+c })/array.length;
-    return naive_average;
+    return Math.round(naive_average);
   }
 
   function present(result){
@@ -138,7 +137,8 @@
       raw_html += "<tr><th>"+name+"</th></tr>";
       var  category = result[name];
       for(var testname in category){
-        raw_html += "<tr><td>"+testname+"</td>";
+        var url = "<a href='./"+name+"/"+testname+"/"+"'>"+testname+"</a>";
+        raw_html += "<tr><td>"+url+"</td>";
         console.log("Printing array of results from "+testname);
         raw_html += "<td>"+buildReport(category[testname])+"</td></tr>";
       }
