@@ -37,22 +37,3 @@
 <p class="trush_full"> Lorem Ipsum
 <p class="twitter"> Lorem Ipsum
 <p class="user"> Lorem Ipsum
-<script>
-  var timing = window.performance.timing;
-  var interval;
-
-function postResult(){
-  if(timing.loadEventStart === 0) return;
-  else{
-  var result = timing.loadEventStart - timing.requestStart;
-  parent.postMessage(result, "*");
-  clearInterval(interval);
- }
-}
-
-function startPolling(){
-interval = setInterval(postResult, 10);
-}
-
-window.onload = startPolling();
-</script>

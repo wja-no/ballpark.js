@@ -15,44 +15,40 @@
 
     inner_window.domain = "wja.no";
 
-    var interval;
-
-    function checkParameters(){
-      console.log("In checkParameters");
-      if(inner_window.performance.timing.loadEventEnd !== 0){
-      var result = inner_window.performance.timing.loadEventStart - inner_window.performance.timing.requestStart;
-      console.log("Clearing interval");
-      clearInterval(interval);
-      inner_window.parent.postMessage(result, "*")
-      }
-    }
-
-    function pollUntilComplete(){
-      interval = setInterval(checkParameters, 100);
-    }
-
-
-    iframe.onload = pollUntilComplete
-
     //We initialize a placeholder for the callee's callback-function.
     //We use an empty function so that JavaScript treats the variable as 
     //callable, although the actual function will be set later.
 
     var finalize = function(){};
 
+    function checkParameters(){
+      var timing = inner_window.performance.timing;
+      console.log("Calling checkParameters");
+      if(timing.requestStart === 0) setTimeout(checkParameters, 10);
+      else {
+        var result = timing.loadEventStart - timing.requestStart;
+        inner_window.parent.postMessage(result, "*");
+      }
+    }
+
+    iframe.onload = checkParameters;
+
     function testNext(){
       console.log("Calling testNext()");
       current = queue.pop();
       var currString = "./"+current_category+"/"+current+"/index.html";
       console.log("attempting to load "+currString);
-      iframe.onload = pollUntilComplete
       iframe.src = currString;
     }
 
     function catchAndContinue(message){
-      console.log(message);
+      console.log("in catchAndContinue");
+      console.log(result);
       result[current] = message.data;
+      console.log("Catching result[current]");
+      console.log(result[current]);
       if(queue.length === 0){
+        console.log("finalizing");
         finalize(result); 
       }
       else testNext();
@@ -92,6 +88,10 @@
     }
 
     function buildResult(incoming){
+      console.log("buildResult called with");
+      console.log(incoming);
+      console.log("results-object looks like");
+      console.log(results);
       if(results[current] === undefined){
         results[current] = incoming;
         for(var subcategory in results[current]){
@@ -131,6 +131,8 @@
   }
 
   function present(result){
+    console.log("calling present with");
+    console.log(result);
     var raw_html = "<table>";
     for(var name in result){
       raw_html += "<tr><th>"+name+"</th></tr>";
