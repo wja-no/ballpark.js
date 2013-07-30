@@ -13,10 +13,26 @@
 
     var inner_window = iframe.contentWindow;
 
-    iframe.onload = setTimeout(function (){
+    inner_window.domain = "wja.no";
+
+    var interval;
+
+    function checkParameters(){
+      console.log("In checkParameters");
+      if(inner_window.performance.timing.loadEventEnd !== 0){
       var result = inner_window.performance.timing.loadEventStart - inner_window.performance.timing.requestStart;
+      console.log("Clearing interval");
+      clearInterval(interval);
       inner_window.parent.postMessage(result, "*")
-    }, 100); 
+      }
+    }
+
+    function pollUntilComplete(){
+      interval = setInterval(checkParameters, 100);
+    }
+
+
+    iframe.onload = pollUntilComplete
 
     //We initialize a placeholder for the callee's callback-function.
     //We use an empty function so that JavaScript treats the variable as 
@@ -25,13 +41,16 @@
     var finalize = function(){};
 
     function testNext(){
+      console.log("Calling testNext()");
       current = queue.pop();
       var currString = "./"+current_category+"/"+current+"/index.html";
       console.log("attempting to load "+currString);
+      iframe.onload = pollUntilComplete
       iframe.src = currString;
     }
 
     function catchAndContinue(message){
+      console.log(message);
       result[current] = message.data;
       if(queue.length === 0){
         finalize(result); 
