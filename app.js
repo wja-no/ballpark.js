@@ -1,9 +1,10 @@
-(function(data, iterations, iframe, window, paragraph, button){
+(function(data, iterations, iframe, window, article, button, table){
 
   if(window.performance === undefined){
-    paragraph.childNodes[0].data  = "Unfortunately, your browser does not support the Navigation Timing API";
+    article.innerHTML = "Unfortunately, your browser does not support the Navigation Timing API";
     return;
   }
+
   function Runner(iframe, window, iterations){
 
     var result = {};
@@ -12,6 +13,8 @@
     var current_category;
 
     var inner_window = iframe.contentWindow;
+
+    var current_testno = 0;
 
     inner_window.domain = "wja.no";
 
@@ -34,9 +37,12 @@
     iframe.onload = checkParameters;
 
     function testNext(){
+
+      current_testno += 1;
+      article.innerHTML = "<p>Running test <strong>"+current_testno+"</strong> of <strong>"+total_tests+"</strong>.</p>";
       console.log("Calling testNext()");
       current = queue.pop();
-      var currString = "./"+current_category+"/"+current+"/index.html";
+      var currString = "./tests/"+current_category+"/"+current+"/index.html";
       console.log("attempting to load "+currString);
       iframe.src = currString;
     }
@@ -81,9 +87,11 @@
     var results = {};
     var queue = new Array();
     var current;
+    total_tests = 0;
 
     for(var i = 0; i < iterations; i++){
       for(category in data){
+        total_tests += data[category].length;
         queue.push(category);
       }
     }
@@ -126,33 +134,36 @@
   }
 
   function buildReport(array){
+    console.log(array);
     var naive_average = array.reduce(function(p, c, i, array){ return p+c })/array.length;
     return Math.round(naive_average);
   }
 
   function present(result){
-    console.log("calling present with");
-    console.log(result);
-    var raw_html = "<table>";
+    article.innerHTML = "<p>Alright! Testing completed.<p>Do take the results with a grain of salt. <p><button>One more time, please</button>";
+    iframe.style.display = "none";
+    var raw_html = "";
     for(var name in result){
       raw_html += "<tr><th>"+name+"</th></tr>";
       var  category = result[name];
       for(var testname in category){
-        var url = "<a href='./"+name+"/"+testname+"/"+"'>"+testname+"</a>";
+        var url = "<a href='./tests/"+name+"/"+testname+"/"+"'>"+testname+"</a>";
         raw_html += "<tr><td>"+url+"</td>";
         console.log("Printing array of results from "+testname);
         raw_html += "<td>"+buildReport(category[testname])+"</td></tr>";
       }
     }
-    raw_html += "</table>";
-    paragraph.innerHTML = raw_html;
+    table.innerHTML = raw_html;
+    button = document.getElementsByTagName('button')[0];
+    button.onclick = engage;
   }
 
   function engage(){
+  iframe.style.display = "block";
   process(data, Runner(iframe, window, iterations), present);
   }
 
   button.onclick = engage;
 
 } (TESTRUNNER.data, 10, document.getElementsByTagName('iframe')[0], window,
-   document.getElementsByTagName('p')[1], document.getElementsByTagName('button')[0]))
+   document.getElementsByTagName('article')[0], document.getElementsByTagName('button')[0], document.getElementsByTagName('table')[0]))
