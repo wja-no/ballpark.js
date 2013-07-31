@@ -7,16 +7,30 @@
 
   function Runner(iframe, window, iterations){
 
+    // The result object which we is returned upon completion;
     var result = {};
+
+    // The current testname
     var current;
+
+    // Queue of testnames
     var queue;
+
+    // Variable that tracks the test category, ie. 'fonts'. 
     var current_category;
 
-    var inner_window = iframe.contentWindow;
-
+    // A number that tracks how many tests have been run. Reported to the user
+    // during testing.
     var current_testno = 0;
 
-    inner_window.domain = "wja.no";
+    // Variable that stores the iframes own window object. We need this to
+    // set domain and post messages. We prefer the parent HTML to inspect the 
+    // test rather than having scripts within the tests reporting results.
+    var inner_window = iframe.contentWindow;
+
+    // In order to circumvent Security policies in the browser, we 
+    // manually set the domain of the iframe to the domain of the parent html.
+    inner_window.domain = document.domain; 
 
     //We initialize a placeholder for the callee's callback-function.
     //We use an empty function so that JavaScript treats the variable as 
@@ -55,10 +69,6 @@
 
     window.addEventListener("message", catchAndContinue, false);
 
-    //return a function that sets the final callback to the one specified
-    //by the callee, builds the queue and result objects corresponding to the 
-    //callees testcase, and empties the queue using functions in the enclosing
-    //scope.  
     return function(tests, category, callback){
 
       finalize = callback;
