@@ -5,40 +5,48 @@
     return;
   }
 
-  function Runner(iframe, window, iterations){
+  function createBindedRunner(iframe, window){
 
-    // The result object which we is returned upon completion;
-    var result = {};
-
-    // The current testname
-    var current;
-
-    // Queue of testnames
-    var queue;
-
-    // Variable that tracks the test category, ie. 'fonts'. 
-    var current_category;
-
-    // A number that tracks how many tests have been run. Reported to the user
-    // during testing.
-    var current_testno = 0;
-
-    // Variable that stores the iframes own window object. We need this to
-    // set domain and post messages. We prefer the parent HTML to inspect the 
-    // test rather than having scripts within the tests reporting results.
-    var inner_window = iframe.contentWindow;
+    var result, number_of_tests, counter, current_test, queue, finalize;
 
     // In order to circumvent Security policies in the browser, we 
     // manually set the domain of the iframe to the domain of the parent html.
+    var inner_window = iframe.contentWindow;
     inner_window.domain = document.domain; 
 
-    //We initialize a placeholder for the callee's callback-function.
-    //We use an empty function so that JavaScript treats the variable as 
-    //callable, although the actual function will be set later.
+    function reportTestNumber(){
+      counter += 1;
+      article.innerHTML = "<p>Running test <strong>"+counter+"</strong> of <strong>"+number_of_tests+"</strong>.</p>";
+    }
 
-    var finalize = function(){};
+    function testNext(){
+      reportTestNumber();
+      current_test = queue.shift();
+      iframe.src = "./tests/"+current_test[0]+"/"+current_test[1]+"/index.html";
+    }
 
-    function checkParameters(){
+    function initializeIfEmpty(){
+      if(result[current_test[0]] === undefined)
+        result[current_test[0]] = {};
+
+      if(result[current_test[0]][current_test[1]] === undefined)
+          result[current_test[0]][current_test[1]] = [];
+    }
+
+    function iterate(){
+      if(queue.length !== 0) testNext();
+      else finalize(result);
+    }
+
+    function catchMessage(message){
+      initializeIfEmpty();
+      result[current_test[0]][current_test[1]].push(message.data);
+      iterate();
+    }
+
+    window.addEventListener("message", catchMessage, false);
+
+    function postIfSet(){
       var timing = inner_window.performance.timing;
       if(timing.requestStart === 0) setTimeout(checkParameters, 10);
       else {
@@ -47,91 +55,35 @@
       }
     }
 
-    iframe.onload = checkParameters;
+    iframe.onload = postIfSet;
 
-    function testNext(){
-
-      current_testno += 1;
-      article.innerHTML = "<p>Running test <strong>"+current_testno+"</strong> of <strong>"+total_tests+"</strong>.</p>";
-      current = queue.pop();
-      var currString = "./tests/"+current_category+"/"+current+"/index.html";
-      iframe.src = currString;
-    }
-
-    function catchAndContinue(message){
-      result[current] = message.data;
-      if(queue.length === 0){
-        iframe.class = "hidden";
-        finalize(result); 
-      }
-      else testNext();
-    }
-
-    window.addEventListener("message", catchAndContinue, false);
-
-    return function(tests, category, callback){
-
-      finalize = callback;
-      current_category = category;
-
-      //For every category, the Runners' result object must be reset.
-      result = {};
-
-      //Initialize a new queue with /iterations/ test-tokens per tests.
+    return function(tests, callback){
+      number_of_tests = tests.length;
       queue = tests;
-
+      counter = 0;
+      finalize = callback;
+      result = {};
       testNext();
     }
   }
 
-  function process(data, runner, finish){
-
-    var results = {};
-    var queue = new Array();
-    var current;
-    total_tests = 0;
-
+  function buildQueue(data){
+    var queue = [];
     for(var i = 0; i < iterations; i++){
-      for(category in data){
-        total_tests += data[category].length;
-        queue.push(category);
+      for(var category in data){
+        data[category].forEach(function(member){ queue.push([category, member]); });
       }
     }
-
-    function buildResult(incoming){
-      if(results[current] === undefined){
-        results[current] = incoming;
-        for(var subcategory in results[current]){
-          var array = new Array();
-          array.push(incoming[subcategory]);
-          results[current][subcategory] = array;
-        }
-      }else for(subcategory in incoming){
-        results[current][subcategory].push(incoming[subcategory]);
-      }
-    }
-
-    function post(incoming_result){
-      buildResult(incoming_result);
-      if(queue[0] === undefined) finish(results);
-      else {
-        current = queue.pop();
-        runner(data[current].concat(), current, post)
-      }
-    }
-
-    current = queue.pop();
-    runner(data[current].concat(), current, post);
+    return queue;
   }
 
-  function buildReport(array){
+
+  function findAverage(array){
     var naive_average = array.reduce(function(p, c, i, array){ return p+c })/array.length;
     return Math.round(naive_average);
   }
 
-  function present(result){
-    console.log("in present");
-    article.innerHTML = "<p>Alright! Testing completed.<p>Do take the results with a grain of salt. <p><button>One more time, please</button>";
+  function createTable(result){
     iframe.style.display = "none";
     var raw_html = "";
     for(var name in result){
@@ -140,23 +92,31 @@
       for(var testname in category){
         var url = "<a href='./tests/"+name+"/"+testname+"/"+"'>"+testname+"</a>";
         raw_html += "<tr><td>"+url+"</td>";
-        raw_html += "<td>"+buildReport(category[testname])+"</td></tr>";
+        raw_html += "<td>"+findAverage(category[testname])+" ms"+"</td></tr>";
       }
     }
     table.innerHTML = raw_html;
-    button = document.getElementsByTagName('button')[0];
-    button.onclick = function(){
-    iframe.style.display = "block";
-    process(data, Runner(iframe, window, iterations), present);
-    };
   }
 
+  function present(result){
+    article.firstChild.textContent = "Alright! Testing completed.";
+    var second_paragraph = document.createElement('p');
+    second_paragraph.textContent = "Do take the results with a grain of salt.";
+    article.insertBefore(second_paragraph, article.children[1]);
+    button.textContent = "One more time, please";
+    article.appendChild(button);
+    createTable(result);
+  };
+
+  var runner = createBindedRunner(iframe, window);
+
   function engage(){
-  iframe.style.display = "block";
-  process(data, Runner(iframe, window, iterations), present);
+    table.innerHTML = "";
+    iframe.style.display = "block";
+    runner(buildQueue(data), present);
   }
 
   button.onclick = engage;
 
-} (TESTRUNNER.data, 10, document.getElementsByTagName('iframe')[0], window,
-   document.getElementsByTagName('article')[0], document.getElementsByTagName('button')[0], document.getElementsByTagName('table')[0]))
+}(TESTRUNNER.data, 10, document.getElementsByTagName('iframe')[0], window,
+  document.getElementsByTagName('article')[0], document.getElementsByTagName('button')[0],document.getElementsByTagName('table')[0]))
