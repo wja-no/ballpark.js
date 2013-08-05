@@ -30,7 +30,7 @@
         result[current_test[0]] = {};
 
       if(result[current_test[0]][current_test[1]] === undefined)
-          result[current_test[0]][current_test[1]] = [];
+        result[current_test[0]][current_test[1]] = [];
     }
 
     function iterate(){
@@ -46,16 +46,22 @@
 
     window.addEventListener("message", catchMessage, false);
 
-    function postIfSet(){
-      var timing = inner_window.performance.timing;
-      if(timing.requestStart === 0) setTimeout(checkParameters, 10);
-      else {
-        var result = timing.loadEventStart - timing.requestStart;
-        inner_window.parent.postMessage(result, "*");
+    function bindPoster(inner_window, callback){
+      function postIfSet(){
+        var timing = inner_window.performance.timing;
+        if(timing.requestStart === 0) setTimeout(postIfSet, 10);
+        else callback(inner_window)
       }
+      return postIfSet;
     }
 
-    iframe.onload = postIfSet;
+    function postStandardResult(inner_window){
+      var timing = inner_window.performance.timing;
+      var result = timing.loadEventStart - timing.requestStart;
+      inner_window.parent.postMessage(result, "*");
+    }
+
+    iframe.onload = bindPoster(inner_window, postStandardResult);
 
     return function(tests, callback){
       number_of_tests = tests.length;
@@ -76,7 +82,6 @@
     }
     return queue;
   }
-
 
   function findAverage(array){
     var naive_average = array.reduce(function(p, c, i, array){ return p+c })/array.length;
@@ -114,9 +119,9 @@
     table.innerHTML = "";
     iframe.style.display = "block";
     runner(buildQueue(data), present);
-  }
+  };
 
   button.onclick = engage;
 
 }(TESTRUNNER.data, 10, document.getElementsByTagName('iframe')[0], window,
-  document.getElementsByTagName('article')[0], document.getElementsByTagName('button')[0],document.getElementsByTagName('table')[0]))
+    document.getElementsByTagName('article')[0], document.getElementsByTagName('button')[0],document.getElementsByTagName('table')[0]))
