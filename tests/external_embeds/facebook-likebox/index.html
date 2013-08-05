@@ -2,7 +2,14 @@
 <meta charset='utf-8'>
 <title>Facebook Likebox</title>
 <p> This page loads a standard Facebook Likebox.
-<iframe
-  src="//www.facebook.com/plugins/likebox.php?href=https%3A%2F%2Fwww.facebook.com%2FFacebookDevelopers&amp;width=292&amp;height=590&amp;colorscheme=light&amp;show_faces=true&amp;header=true&amp;stream=true&amp;show_border=true&amp;appId=202196163183241" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:590px;"
-  allowTransparency="true">
-</iframe>
+<div id="fb-root"></div>
+<!-- Facebook JavaScript SDK -->
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+<div class="fb-like-box" data-href="https://www.facebook.com/FacebookDevelopers" data-width="292" data-show-faces="true" data-stream="true" data-show-border="true" data-header="true"></div>
+
