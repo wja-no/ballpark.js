@@ -2,7 +2,9 @@
 <meta charset='utf-8'>
 <link rel='stylesheet' href='./res/style.css'>
 <article>
-<p> This is where we talk about the awesome testrunner. </p>
+<p>This test utilizes the <a href='https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming/Overview.html'>Navigation Timing API</a> to give you a ballpark estimate of how long a certain asset or common site configuration takes to load.</p>
+<p>The result is arrived at by calculating <code>performance.loadEventEnd - performance.requestStart</code>. This determines the time (in ms) from the browser starts requesting resources from the server (after DNS has been resolved) to the moment the load event finishes.</p>
+<p> Each test is run ten times. On completion, the arithmetic mean is displayed.
 <button>Engage</button>
 </article>
 <table></table>
