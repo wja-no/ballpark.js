@@ -1,0 +1,15 @@
+Jquery 1 UI:
+  Last demokontroller
+      Datepicker
+      Finn en representativ side
+      Last ned alle komponenter
+
+
+Sorter testene slik at alle testene kommer opp i tråd med hvor raske vi tror de er.
+Kutte CDN
+Kutte Facebook-likebox
+
+Pynte på beskrivelsen
+Beskrive Apache-oppsett i README
+Gjøre ferdig Announcement
+Vil gjerne ha en code-review på runneren.
