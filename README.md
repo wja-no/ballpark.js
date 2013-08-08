@@ -1,5 +1,7 @@
-frontend-performance
+ballpark.js
 ====================
+
+Ballpark.js is MIT-licensed, see LICENSE.txt.
 
 ## Deploying ballpark.js on an Apache-server 
 
