@@ -2,7 +2,7 @@ AddType application/vnd.ms-fontobject .eot
 AddType font/ttf .ttf
 AddType font/otf .otf
 AddType application/x-font-woff .woff
-<FilesMatch ".(html|htm|js|css|png|jpg)$">
+<FilesMatch ".(html|htm|js|css|png|jpg|eot|ttf|otf|woff)$">
 FileETag None
 <ifModule mod_headers.c>
 Header unset ETag

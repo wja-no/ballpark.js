@@ -172,5 +172,5 @@
 
     button.onclick = engage;
 
-}(TESTRUNNER.data, 12, document.getElementsByTagName('iframe')[0], window,
+}(TESTRUNNER.data, 5, document.getElementsByTagName('iframe')[0], window,
         document.getElementsByTagName('article')[0], document.getElementsByTagName('button')[0],document.getElementsByTagName('table')[0]))
