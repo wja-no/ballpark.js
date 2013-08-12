@@ -79,7 +79,7 @@ iframe {
 @media all and (max-width: 650px){
     * {
         width: 275px;
-    position: center;
+   text-align: center;
     }
 }
     
