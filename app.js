@@ -158,7 +158,7 @@
                     "/" + testname + "/" + "'>" + testname + "</a>";
                 raw_html += "<tr><td>" + url + "</td>";
                 raw_html += "<td>" + findFinalNumber(category[testname]) +
-                    "%nbsp;ms" + "</td></tr>";
+                    "&nbsp;ms" + "</td></tr>";
             }
         }
         table.innerHTML = raw_html;
