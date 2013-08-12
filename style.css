@@ -60,6 +60,7 @@ button {
     background: #30afef;
     border: 1px solid rgb(150,150,150);
     margin-top: 25px;
+    margin-bottom: 75px;
 }
 
 article {
@@ -77,9 +78,10 @@ iframe {
 }
 
 @media all and (max-width: 650px){
-    * {
+    table, article, iframe {
         width: 275px;
-   text-align: center;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
-    
+
