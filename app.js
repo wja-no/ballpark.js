@@ -2,13 +2,65 @@
 
     "use strict";
 
+    // DOM Methods
+    
+    function text(string){
+        return document.createTextNode(string);
+    }
+
+    function paragraph(){
+        var p = document.createElement('p');
+        for(var i = 0; i < arguments.length; i++){
+            if(typeof arguments[i] === "string")
+                p.appendChild(text(arguments[i]));
+            else p.appendChild(arguments[i]);
+        }
+        return p;
+    }
+
+    function anchor(href, title){
+        var a = document.createElement('a');
+        a.href = href;
+        if(text !== undefined) a.appendChild(text(title));
+        return a;
+    }
+
+    function makeParent(child, typeString){
+        var element = document.createElement(typeString);
+        element.appendChild(child);
+        return element;
+    }
+
+    function appendChildren(element){
+        if(arguments.length <= 1) return;
+
+        for(var i = 1; i < arguments.length; i++)
+            element.appendChild(arguments[i]);
+
+        return element;
+    }
+
+    function nodeListToArray(list){
+        var array = [];
+        for(var i = 0; i < list.length; i++) array[i] = list[i];
+        return array;
+    }
+
+    function updateArticle(new_pars){
+        var old_pars = nodeListToArray(article.getElementsByTagName('p'));
+        old_pars.forEach(function(par){ article.removeChild(par) });
+        new_pars.forEach(function(par){ article.appendChild(par) });
+    }
+
     // First, we check if the Navigation Timing API is supported by the
     // browser. If not, the script informs the user and returns. 
 
     if (window.performance === undefined) {
-        article.innerHTML = "<p>Unfortunately, your browser does not " +
-            "support the <a href='http://caniuse.com/#search=" + 
-            "navigation%20timing%20api'> Navigation Timing API</a>.</p>";
+        var par = paragraph('Unfortunately, your browser does not support the ');
+        var link = anchor("http://caniuse.com/#search=navigation%20timing", 'Navigation Timing API');
+        par.appendChild(link);
+        updateArticle([par]);
+        par.appendChild(document.createTextNode('.'));
         return;
     }
 
@@ -32,14 +84,26 @@
 
         inner_window.domain = document.domain; 
 
-        function reportTestNumber() {
-            counter += 1;
-            article.innerHTML = "<p>Running test <strong>" + counter +
-                "</strong> of <strong>" + number_of_tests + "</strong>.</p>";
+        function createReport(total_tests){
+            var intro = "Running test ";
+            var countptr = text("");
+            var fat_count = makeParent(countptr, 'strong');
+            var copula = " of ";
+            var total = makeParent(text(total_tests), 'strong');
+            var period = text(".");
+            var par = paragraph(intro, fat_count, copula, total, period);
+            updateArticle([par]);
+
+            return function(){
+                counter += 1;
+                countptr.replaceWholeText(counter);
+            }
         }
 
+        var reporter;
+
         function testNext() {
-            reportTestNumber();
+            reporter();
             current_test = queue.shift();
             iframe.src = "./tests/" + current_test[0]+ "/" + current_test[1] +
                 "/index.html";
@@ -87,6 +151,7 @@
             counter = 0;
             finalize = callback;
             result = {};
+            reporter = createReport(number_of_tests);
             testNext();
         };
     }
@@ -147,41 +212,61 @@
         return Math.round(naive_average);
     }
 
-    function createTable (result) {
-        iframe.style.display = "none";
-        var raw_html = "";
-        for(var name in result){
-            raw_html += "<tr><th>" + name + "</th></tr>";
-            var  category = result[name];
-            for(var testname in category){
-                var url = "<a href='./tests/" + name + 
-                    "/" + testname + "/" + "'>" + testname + "</a>";
-                raw_html += "<tr><td>" + url + "</td>";
-                raw_html += "<td>" + findFinalNumber(category[testname]) +
-                    "&nbsp;ms" + "</td></tr>";
-            }
-        }
-        table.innerHTML = raw_html;
+
+    function createTestURL(category, test){
+        var url = document.createElement('a');
+        url.href= './tests/' + category + "/" + test + "/";
+        url.appendChild(document.createTextNode(test));
+        return url;
     }
 
-    function reset () {
+
+    function createTable (result) {
+
+        var tblbody = document.createElement('tbody');
+
+        for(var category in result){
+            var category_array = result[category];
+            var header = makeParent(text(category), 'th');
+            tblbody.appendChild(makeParent(header, 'tr'));
+
+            for(var testname in category_array){
+                var row = document.createElement('tr');
+                var urlfield = createTestURL(category, testname);
+                var atomic_result = result[category][testname];
+                var testresult = findFinalNumber(atomic_result);
+                var packed_result = text(testresult+' ms');
+                appendChildren(row, makeParent(urlfield, 'td'), makeParent(packed_result, 'td'));
+                tblbody.appendChild(row);
+            }
+        }
+
+        table.appendChild(tblbody);
+    }
+
+    function finalMessage(){
+        var p1 = paragraph(text('Alright! Testing completed.'));
+        var p2 = paragraph(text('Do take the results with a grain of salt.'));
         button.textContent = "One more time, please";
-        article.appendChild(button);
+        var p3 = paragraph(button);
+        return [p1, p2, p3];
     }
 
     function present (result) {
-        article.firstChild.textContent = "Alright! Testing completed.";
-        var second_paragraph = document.createElement('p');
-        second_paragraph.textContent = "Do take the results with a grain of salt.";
-        article.insertBefore(second_paragraph, article.children[1]);
+        iframe.style.display = "none";
+        updateArticle(finalMessage());
         createTable(result);
-        reset();
     }
 
     var runner = createBindedRunner(iframe, window);
 
+    function resetTableIfSet(){
+        if(table.childNodes.length !== 0)
+            table.removeChild(table.childNodes[0]);
+    }
+
     function engage () {
-        table.innerHTML = "";
+        resetTableIfSet();
         iframe.style.display = "block";
         runner(buildQueue(data, iterations), present);
     }
@@ -189,4 +274,4 @@
     button.onclick = engage;
 
 }(TESTRUNNER.data, 5, document.getElementsByTagName('iframe')[0], document, window,
-  document.getElementsByTagName('article')[0], document.getElementsByTagName('button')[0],document.getElementsByTagName('table')[0]));
+        document.getElementsByTagName('article')[0], document.getElementsByTagName('button')[0],document.getElementsByTagName('table')[0]));
