@@ -2,6 +2,15 @@
 
     "use strict";
 
+    // Return if incompatible with Navigation Timing API
+    if(window.performance === undefined) {
+        var html = document.getElementsByTagName('html')[0];
+        var body = html.getElementsByTagName('body')[0];
+        body.innerHTML = "<p>Unfortunately, your browser does not support the " + 
+    "<a href='http://caniuse.com/#search=navigation'>Navigation Timing API</a>.</p>";
+return;
+    }
+
     // DOM Methods
     
     function text(string){
@@ -46,6 +55,17 @@
         return array;
     }
 
+    // IE9 does not support forEach, so we define it here.
+    // Kudos to StackOverflow user bobince for the standatds-compliant implementation
+    if(!Array.prototype.forEach) {
+        Array.prototype.forEach = function (fun, that){
+            for(var i = 0, n = this.length; i < n; i++){
+                if(i in this)
+                    fun.call(that, this[i], i, this);
+            }
+        }
+    }
+
     function updateArticle(new_pars){
         var old_pars = nodeListToArray(article.getElementsByTagName('p'));
         old_pars.forEach(function(par){ article.removeChild(par) });
@@ -55,14 +75,6 @@
     // First, we check if the Navigation Timing API is supported by the
     // browser. If not, the script informs the user and returns. 
 
-    if (window.performance === undefined) {
-        var par = paragraph('Unfortunately, your browser does not support the ');
-        var link = anchor("http://caniuse.com/#search=navigation%20timing", 'Navigation Timing API');
-        par.appendChild(link);
-        updateArticle([par]);
-        par.appendChild(document.createTextNode('.'));
-        return;
-    }
 
     // This function servers as a closure for the actual runner returned to
     // the caller. Helper functions are defined, and an eventlistener is 
@@ -179,9 +191,11 @@
     // Data presentation methods
 
     function sum (array) {
-        return array.reduce(function(previous, current, index, array) {
-            return previous+current;
-        });
+        var sum = 0;
+        for(var i = 0; i < array.length; i++){
+            sum += (+array[i]); //If the elements are strings, we coerce them to numbers
+        }
+        return sum;
     }
 
     function findMinMax (array) {
@@ -261,11 +275,13 @@
     var runner = createBindedRunner(iframe, window);
 
     function resetTableIfSet(){
+        console.log("In resetTableIfSet");
         if(table.childNodes.length !== 0)
             table.removeChild(table.childNodes[0]);
     }
 
     function engage () {
+        console.log("In engage");
         resetTableIfSet();
         iframe.style.display = "block";
         runner(buildQueue(data, iterations), present);
