@@ -11,7 +11,7 @@ After setting up the project on your webserver with correct .htaccess-settings a
 
 1. Create a folder with all the assets you want, and an <code>index.html</code> that loads them.
 2. If there is already a category in <code>/tests/</code> matching the content of your test, place your testfolder there. If not, create a new folder in <code>/tests/</code> named after the category in question, and place your testfolder in this newly created folder.
-3. Update the <code>TESTRUNNER.data</code> object. The object has a property for each category, containing an array of tests. So if you have created, say, a test combining such-and-such images, add the title of your test to the images-category:
+3. Update the <code>TESTRUNNER.data</code> object found in <code>tests.js</code>. The object has a property for each category, containing an array of tests. So if you have created, say, a test combining such-and-such images, add the title of your test to the images-category:
 
 ```javascript
 ...
@@ -24,11 +24,11 @@ After setting up the project on your webserver with correct .htaccess-settings a
 
 ## Deploying ballpark.js on an Apache-server 
 
-We want Apache to send no-cache headers back to the client. Therefore, the project contains an .htaccess file that sets these headers. At this time we only have configuration details for Apache, not nginx or other systems.
+We want Apache to send no-cache headers back to the client. Therefore, the project contains an <code>.htaccess</code> file that sets these headers. At this time we only have configuration details for Apache, not nginx or other systems.  
 
 ### Permitting directory-level configurations via .htaccess files
 
-If you are unfamilliar with .htaccess-files, consult the [offical documentation](http://httpd.apache.org/docs/current/howto/htaccess.html).
+If you are unfamilliar with <code>.htaccess</code>-files, consult the [offical documentation](http://httpd.apache.org/docs/current/howto/htaccess.html).
 
 Here is a crude heuristic tested on Debian 7. 
 
@@ -40,7 +40,7 @@ Here is a crude heuristic tested on Debian 7.
     ...
     AllowOverride All
 ```
-3. Test your configuration by writing gibberish in the .htaccess-file. This should trigger a 500 internal server error when accessing the project root folder from a browser.
+3. Test your configuration by writing gibberish in the <code>.htaccess</code>-file. This should trigger a 500 internal server error when accessing the project root folder from a browser.
 
 ## Weird things
 
