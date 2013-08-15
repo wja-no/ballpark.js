@@ -23,9 +23,14 @@ table {
     vertical-align: top;
     float: left;
 }
+
 table th {
     font-weight: normal;
     text-align: left;
+}
+
+table td {
+    white-space: nowrap;
 }
 table td:first-child {
     padding-left: 25px;
