@@ -12,14 +12,14 @@ After setting up the project on your webserver with correct .htaccess-settings a
 1. Create a folder with all the assets you want, and an <code>index.html</code> that loads them.
 2. If there is already a category in <code>/tests/</code> matching the content of your test, place your testfolder there. If not, create a new folder in <code>/tests/</code> named after the category in question, and place your testfolder in this newly created folder.
 3. Update the <code>TESTRUNNER.data</code> object. The object has a property for each category, containing an array of tests. So if you have created, say, a test combining such-and-such images, add the title of your test to the images-category:
-``` javascript
+
+```javascript
 ...
     TESTRUNNER.data = {
         ...
         images: ["avatars", "1136-pixel-image","2880-pixel-image", "my_new_test"],
         ...
     }
-
 ```
 
 ## Deploying ballpark.js on an Apache-server 
