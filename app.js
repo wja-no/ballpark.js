@@ -3,9 +3,18 @@
 (function (data, iterations, iframe, document, window, article, button, table) {
 
     "use strict";
+
+    window.onload = function () {
+
+        if(location.hash !== ""){
+            renderJSON(location.hash);
+        }
+    }
+    
+
     // This is a placeholder for the testrunner after it has  binded an
     // eventlistener to the iframe window.
-    var runner;
+    var testqueue, runner; 
     
     // Return if incompatible with Navigation Timing API
     
@@ -85,7 +94,7 @@
     // the caller. Helper functions are defined, and an eventlistener is 
     // binded to the iframe. 
 
-    function createBindedRunner(iframe, window) {
+    function createBoundRunner(iframe, window) {
 
         var counter, // This stores current test number.
             current_test, // This stores the currently running test category (string).
@@ -135,11 +144,14 @@
                 testNext();
             }
             else {
+                window.removeEventListener("message", catchMessage, false)
                 finalize(result);
             }
         }
 
-        function initializeIfEmpty() {
+        function initializeResultIfEmpty() {
+
+
             if (result[current_test[0]] === undefined){
                 result[current_test[0]] = {};
             }
@@ -150,7 +162,9 @@
         }
 
         function catchMessage(message) {
-            initializeIfEmpty();
+            console.log("catchMessage called with message:");
+            console.log(message);
+            initializeResultIfEmpty();
             result[current_test[0]][current_test[1]].push(message.data);
             iterate();
         }
@@ -186,11 +200,7 @@
         };
     }
 
-    runner = createBindedRunner(iframe, window);
-
-    // This function builds the queue from the provided tests-object.
-
-    function buildQueue (data, iterations) {
+    function buildQueueFromProvidedTestObject (data, iterations) {
         var queue = [], i, category;
 
         function wrapCategory(category){
@@ -207,6 +217,20 @@
             }
         }
         return queue;
+    }
+
+    function makeResultsObject(data){
+        var category_name, category, i, 
+            results = {};
+
+        for(category_name in data){
+            results[category_name] = {};
+            category = data[category_name];
+            for(i = 0; i < category.length; i += 1){
+                results[category_name][category[i]] = [];
+            }
+        }
+        return results;
     }
 
     // Data presentation methods
@@ -249,6 +273,7 @@
     }
 
     function findFinalNumber (array) {
+
         var trimmed_array = array.filter(makeFilter.apply(null, findMinMax(array))),
             naive_average = sum(trimmed_array)/trimmed_array.length;
         return Math.round(naive_average);
@@ -307,12 +332,23 @@
         return [p1, p2, p3];
     }
 
+    function pushResultToHistory(result){
+        window.location.hash = JSON.stringify(result);
+        present(result);
+    }
+
     function present (result) {
         iframe.style.display = "none";
         updateArticle(finalMessage());
         createTable(result);
     }
 
+    function renderJSON (fragment) {
+        iframe.style.display = "none";
+        updateArticle(finalMessage());
+        //
+        createTable(JSON.parse(String.prototype.slice.call(fragment, 1)));
+    }
 
     function resetTableIfSet(){
         if(table.childNodes.length !== 0) {
@@ -320,10 +356,12 @@
         }
     }
 
+    testqueue = buildQueueFromProvidedTestObject(data, iterations);
+
     function engage () {
         resetTableIfSet();
         iframe.style.display = "block";
-        runner(buildQueue(data, iterations), present);
+        createBoundRunner(iframe, window)(testqueue.slice(), pushResultToHistory);
     }
 
     button.onclick = engage;
