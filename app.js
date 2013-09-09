@@ -4,20 +4,8 @@
 
     "use strict";
 
-    window.onload = function () {
-
-        if (location.hash !== "") 
-            present (JSON.parse(String.prototype.slice.call(location.hash, 1)));
-    }
-    
-    // Return if incompatible with Navigation Timing API
-    
-    if(window.performance === undefined) {
-        (document.getElementsByTagName('body')[0]).innerHTML = "<p>Unfortunately," +
-            "  your browser does not support the " + "<a href=" + 
-            "'http://caniuse.com/#search=navigation'>Navigation Timing API</a>.</p>"; 
-        return;
-    }
+    // This makes it easier to access the iframe's dom
+    var inner_window = iframe.contentWindow;
 
     // IE9 does not support forEach, so we define it here.
     // Kudos to StackOverflow user bobince for the standatds-compliant implementation
@@ -33,7 +21,7 @@
     }
 
     // DOM Methods
-    
+
     function text(string) {
         return document.createTextNode(string);
     }
@@ -84,47 +72,29 @@
         new_pars.forEach(function(par){ article.appendChild(par); });
     }
 
-    // This function servers as a closure for the actual runner returned to
-    // the caller. Helper functions are defined, and an eventlistener is 
-    // binded to the iframe. 
+    function postResult(inner_window) {
+        var timing = inner_window.performance.timing,
+            difference = timing.loadEventEnd - timing.requestStart;
+        inner_window.parent.postMessage(difference, "*");
+    }
+
+    function postIfSet() {
+        var timing = inner_window.performance.timing;
+        if (timing.loadEventEnd === 0){
+            setTimeout(postIfSet, 10);
+        }
+        else {
+            postResult(inner_window);
+        }
+    }
 
     function createBoundRunner(iframe, window) {
 
-        var counter, // This stores current test number.
-            current_test, // This stores the currently running test category (string).
-            inner_window = iframe.contentWindow, // Make it easier to access  the iframe's DOM
+        var current_test, // This stores the currently running test category (string).
             finalize, // A placeholder for callback function to be called when testing is complete.
-            number_of_tests, // Stores total number of tests
             queue, // The queue of tests
             reporter, // A placeholder for the function(X) used to report 'currently running test X of total' 
             result; // A placeholder for the result
-
-        // In order to circumvent Security policies in the browser, we 
-        // manually set the domain of the iframe to the domain of the
-        // parent html.
-
-        inner_window.domain = document.domain; 
-
-        // In order to avoid redrawing the article for every iteration,
-        // we wrap the article element in a closure and return a function
-        // that only replaces the counter text for each iteration.
-        
-        function createReport(total_tests){
-            var intro = "Running test ",
-                countptr = text(""), //A pointer to the text node where we set the currently runing testnumber
-                fat_count = makeParent(countptr, 'strong'),
-                copula = " of ",
-                total = makeParent(text(total_tests), 'strong'),
-                period = text("."),
-                par = paragraph(intro, fat_count, copula, total, period);
-
-            updateArticle([par]);
-
-            return function(){
-                counter += 1;
-                countptr.textContent = counter;
-            };
-        }
 
         function testNext() {
             reporter();
@@ -139,7 +109,7 @@
             }
             else {
                 window.removeEventListener("message", catchMessage, false)
-                finalize(result);
+                    finalize(result);
             }
         }
 
@@ -148,34 +118,35 @@
             iterate();
         }
 
+
+
         window.addEventListener("message", catchMessage, false);
-
-        function postResult(inner_window) {
-            var timing = inner_window.performance.timing,
-                difference = timing.loadEventEnd - timing.requestStart;
-            inner_window.parent.postMessage(difference, "*");
-        }
-
-        function postIfSet() {
-            var timing = inner_window.performance.timing;
-            if (timing.loadEventEnd === 0){
-                setTimeout(postIfSet, 10);
-            }
-            else {
-                postResult(inner_window);
-            }
-        }
-
         iframe.onload = postIfSet;
 
         return function(tests, resultContainer, callback)  {
-            number_of_tests = tests.length;
             queue = tests;
-            counter = 0;
             finalize = callback;
             result = resultContainer;
-            reporter = createReport(number_of_tests);
+            reporter = createReport(tests.length);
             testNext();
+        };
+    }
+
+    function createReport(total_tests){
+        var intro = "Running test ",
+            counter = 0,
+            countptr = text(""), //A pointer to the text node where we set the currently runing testnumber
+            fat_count = makeParent(countptr, 'strong'),
+            copula = " of ",
+            total = makeParent(text(total_tests), 'strong'),
+            period = text("."),
+            par = paragraph(intro, fat_count, copula, total, period);
+
+        updateArticle([par]);
+
+        return function(){
+            counter += 1;
+            countptr.textContent = counter;
         };
     }
 
@@ -243,12 +214,12 @@
             if (value !== smallest && value !== largest) {
                 return true;
             }
-                removals += 1;
-                if (removals <= 2) {
-                    return false;
-                }
-                return true;
-            
+            removals += 1;
+            if (removals <= 2) {
+                return false;
+            }
+            return true;
+
         };
     }
 
@@ -271,32 +242,32 @@
     function createTable (result) {
 
         var category, category_array, final_number, header, result_string,
-        results, row, tblbody = document.createElement('tbody'), testname,
-        urlfield; 
+            results, row, tblbody = document.createElement('tbody'), testname,
+            urlfield; 
 
         for(category in result){
             if(result.hasOwnProperty(category)){
 
-            category_array = result[category];
-            header = makeParent(text(category), 'th');
-            tblbody.appendChild(makeParent(header, 'tr'));
+                category_array = result[category];
+                header = makeParent(text(category), 'th');
+                tblbody.appendChild(makeParent(header, 'tr'));
 
-            for(testname in category_array){
-                if(category_array.hasOwnProperty(testname)) {
-                row = document.createElement('tr');
-                urlfield = createTestURL(category, testname);
+                for(testname in category_array){
+                    if(category_array.hasOwnProperty(testname)) {
+                        row = document.createElement('tr');
+                        urlfield = createTestURL(category, testname);
 
-                results = result[category][testname];
-                final_number = findFinalNumber(results);
-                result_string = text(final_number+' ms');
+                        results = result[category][testname];
+                        final_number = findFinalNumber(results);
+                        result_string = text(final_number+' ms');
 
-                appendChildren(row, makeParent(urlfield, 'td'), 
-                               makeParent(result_string, 'td'));
+                        appendChildren(row, makeParent(urlfield, 'td'), 
+                                makeParent(result_string, 'td'));
 
-                tblbody.appendChild(row);
+                        tblbody.appendChild(row);
+                    }
+                }
             }
-            }
-        }
         }
 
         table.appendChild(tblbody);
@@ -323,6 +294,12 @@
         createTable(result);
     }
 
+    function printIncompatibilityMessage() {
+        (document.getElementsByTagName('body')[0]).innerHTML = "<p>Unfortunately," +
+    "  your browser does not support the " + "<a href=" + 
+    "'http://caniuse.com/#search=navigation'>Navigation Timing API</a>.</p>"; 
+    }
+
     function resetTableIfSet(){
         if(table.childNodes.length !== 0) {
             table.removeChild(table.childNodes[0]);
@@ -332,9 +309,29 @@
     function engage () {
         resetTableIfSet();
         iframe.style.display = "block";
-        createBoundRunner(iframe, window)(buildQueueFromProvidedTestObject(data, iterations), makeResultsObject(data), pushResultToHistory);
+        createBoundRunner(iframe, window)(buildQueueFromProvidedTestObject(data, iterations), 
+                makeResultsObject(data), pushResultToHistory);
     }
 
+    // Return if incompatible with Navigation Timing API
+    
+    if(window.performance === undefined) {
+        printIncompatibilityMessage();
+return;
+    }
+
+
+    window.onload = function () {
+
+        if (location.hash !== "") 
+            present (JSON.parse(String.prototype.slice.call(location.hash, 1)));
+    }
+
+    // In order to circumvent Security policies in the browser, we 
+    // manually set the domain of the iframe to the domain of the
+    // parent html.
+
+    inner_window.domain = document.domain; 
     button.onclick = engage;
 
 }(TESTRUNNER.data, 12, document.getElementsByTagName('iframe')[0], document, window,
