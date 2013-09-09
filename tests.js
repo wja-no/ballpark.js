@@ -2,10 +2,10 @@ var TESTRUNNER = {};
 
 TESTRUNNER.data = {
    baseline: ["hello_world"],
-   embedded_images: ["many_files", "single_base64"],
+   embedded_images: ["single_base64", "many_files"],
    resources: ["few", "many"],
    fonts: ["local-base64"],
-  custom_font: ["full", "subset"],
+  custom_font: ["subset", "full"],
   images: ["avatars", "1136-pixel-image","2880-pixel-image"],
-  libraries: [, "jquery-1-UI-local", "jquery-1-local", "jquery-2-local"]
+  libraries: ["jquery-2", "jquery-1", "jquery-1-UI"]
 }
