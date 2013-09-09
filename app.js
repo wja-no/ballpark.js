@@ -118,8 +118,6 @@
             iterate();
         }
 
-
-
         window.addEventListener("message", catchMessage, false);
         iframe.onload = postIfSet;
 
@@ -316,20 +314,15 @@
     // Return if incompatible with Navigation Timing API
     
     if(window.performance === undefined) {
-        printIncompatibilityMessage();
-return;
+        printIncompatibilityMessage(); 
+        return;
     }
-
 
     window.onload = function () {
 
         if (location.hash !== "") 
             present (JSON.parse(String.prototype.slice.call(location.hash, 1)));
     }
-
-    // In order to circumvent Security policies in the browser, we 
-    // manually set the domain of the iframe to the domain of the
-    // parent html.
 
     inner_window.domain = document.domain; 
     button.onclick = engage;
