@@ -3,6 +3,10 @@ ballpark.js
 
 Ballpark.js is MIT-licensed, see LICENSE.txt.
 
+## How are the results computed?
+
+The result is arrived at by calculating <code>performance.loadEventEnd - performance.requestStart</code>. This determines the time (in ms) from the browser starts requesting resources from the server (after DNS has been resolved) to the moment the load event finishes.
+
 ## How do I run the tests?
 
 After setting up the project on your webserver with correct .htaccess-settings and so forth (se below), point your webbrowser to the root-directory. The tests run in-browser - click 'engage' and you should be all set!
