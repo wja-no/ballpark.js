@@ -6,7 +6,7 @@
 
     window.onload = function () {
 
-        if(location.hash !== ""){
+        if (location.hash !== "") {
             renderJSON(location.hash);
         }
     }
@@ -27,45 +27,45 @@
 
     // DOM Methods
     
-    function text(string){
+    function text(string) {
         return document.createTextNode(string);
     }
 
-    function paragraph(){
+    function paragraph() {
         var p = document.createElement('p'), i;
-        for(i = 0; i < arguments.length; i += 1){
-            if(typeof arguments[i] === "string"){
+        for (i = 0; i < arguments.length; i += 1) {
+            if (typeof arguments[i] === "string") {
                 p.appendChild(text(arguments[i]));
             }
-            else{ 
+            else { 
                 p.appendChild(arguments[i]);
             }
         }
         return p;
     }
 
-    function makeParent(child, typeString){
+    function makeParent(child, typeString) {
         var element = document.createElement(typeString);
         element.appendChild(child);
         return element;
     }
 
-    function appendChildren(element){
+    function appendChildren(element) {
         var i;
-        if(arguments.length <= 1){ 
+        if (arguments.length <= 1) { 
             return;
         }
 
-        for(i = 1; i < arguments.length; i += 1){
+        for (i = 1; i < arguments.length; i += 1) {
             element.appendChild(arguments[i]);
         }
 
         return element;
     }
 
-    function nodeListToArray(list){
+    function nodeListToArray(list) {
         var array = [], i;
-        for(i = 0; i < list.length; i += 1){
+        for (i = 0; i < list.length; i += 1) {
             array[i] = list[i];
         }
         return array;
@@ -73,11 +73,11 @@
 
     // IE9 does not support forEach, so we define it here.
     // Kudos to StackOverflow user bobince for the standatds-compliant implementation
-    if(!Array.prototype.forEach) {
+    if (!Array.prototype.forEach) {
         Array.prototype.forEach = function (fun, that){
             var i, n;
-            for(i = 0, n = this.length; i < n; i+= 1){
-                if(this[i] !== undefined){
+            for (i = 0, n = this.length; i < n; i+= 1) {
+                if (this[i] !== undefined) {
                     fun.call(that, this[i], i, this);
                 }
             }
@@ -162,8 +162,6 @@
         }
 
         function catchMessage(message) {
-            console.log("catchMessage called with message:");
-            console.log(message);
             initializeResultIfEmpty();
             result[current_test[0]][current_test[1]].push(message.data);
             iterate();
