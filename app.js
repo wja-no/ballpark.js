@@ -7,7 +7,7 @@
     window.onload = function () {
 
         if (location.hash !== "") 
-            present (json.parse(String.prototype.slice.call(location.hash, 1)));
+            present (JSON.parse(String.prototype.slice.call(location.hash, 1)));
     }
     
     // Return if incompatible with Navigation Timing API
@@ -143,20 +143,7 @@
             }
         }
 
-        function initializeResultIfEmpty() {
-
-
-            if (result[current_test[0]] === undefined){
-                result[current_test[0]] = {};
-            }
-
-            if (result[current_test[0]][current_test[1]] === undefined){
-                result[current_test[0]][current_test[1]] = [];
-            }
-        }
-
         function catchMessage(message) {
-            initializeResultIfEmpty();
             result[current_test[0]][current_test[1]].push(message.data);
             iterate();
         }
@@ -181,12 +168,12 @@
 
         iframe.onload = postIfSet;
 
-        return function(tests, callback) {
+        return function(tests, resultContainer, callback)  {
             number_of_tests = tests.length;
             queue = tests;
             counter = 0;
             finalize = callback;
-            result = {};
+            result = resultContainer;
             reporter = createReport(number_of_tests);
             testNext();
         };
@@ -212,6 +199,7 @@
     }
 
     function makeResultsObject(data){
+
         var category_name, category, i, 
             results = {};
 
@@ -344,7 +332,7 @@
     function engage () {
         resetTableIfSet();
         iframe.style.display = "block";
-        createBoundRunner(iframe, window)(buildQueueFromProvidedTestObject(data, iterations), pushResultToHistory);
+        createBoundRunner(iframe, window)(buildQueueFromProvidedTestObject(data, iterations), makeResultsObject(data), pushResultToHistory);
     }
 
     button.onclick = engage;
