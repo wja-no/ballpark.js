@@ -7,7 +7,7 @@
     window.onload = function () {
 
         if (location.hash !== "") {
-            renderJSON(location.hash);
+            present (json.parse(String.prototype.slice.call(location.hash, 1)));
         }
     }
     
@@ -339,13 +339,6 @@
         iframe.style.display = "none";
         updateArticle(finalMessage());
         createTable(result);
-    }
-
-    function renderJSON (fragment) {
-        iframe.style.display = "none";
-        updateArticle(finalMessage());
-        //
-        createTable(JSON.parse(String.prototype.slice.call(fragment, 1)));
     }
 
     function resetTableIfSet(){
