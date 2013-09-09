@@ -10,11 +10,6 @@
             present (json.parse(String.prototype.slice.call(location.hash, 1)));
     }
     
-
-    // This is a placeholder for the testrunner after it has  binded an
-    // eventlistener to the iframe window.
-    var testqueue, runner; 
-    
     // Return if incompatible with Navigation Timing API
     
     if(window.performance === undefined) {
@@ -346,12 +341,10 @@
         }
     }
 
-    testqueue = buildQueueFromProvidedTestObject(data, iterations);
-
     function engage () {
         resetTableIfSet();
         iframe.style.display = "block";
-        createBoundRunner(iframe, window)(testqueue.slice(), pushResultToHistory);
+        createBoundRunner(iframe, window)(buildQueueFromProvidedTestObject(data, iterations), pushResultToHistory);
     }
 
     button.onclick = engage;
