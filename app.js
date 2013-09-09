@@ -6,9 +6,8 @@
 
     window.onload = function () {
 
-        if (location.hash !== "") {
+        if (location.hash !== "") 
             present (json.parse(String.prototype.slice.call(location.hash, 1)));
-        }
     }
     
 
@@ -23,6 +22,19 @@
             "  your browser does not support the " + "<a href=" + 
             "'http://caniuse.com/#search=navigation'>Navigation Timing API</a>.</p>"; 
         return;
+    }
+
+    // IE9 does not support forEach, so we define it here.
+    // Kudos to StackOverflow user bobince for the standatds-compliant implementation
+    if (!Array.prototype.forEach) {
+        Array.prototype.forEach = function (fun, that){
+            var i, n;
+            for (i = 0, n = this.length; i < n; i+= 1) {
+                if (this[i] !== undefined) {
+                    fun.call(that, this[i], i, this);
+                }
+            }
+        };
     }
 
     // DOM Methods
@@ -69,19 +81,6 @@
             array[i] = list[i];
         }
         return array;
-    }
-
-    // IE9 does not support forEach, so we define it here.
-    // Kudos to StackOverflow user bobince for the standatds-compliant implementation
-    if (!Array.prototype.forEach) {
-        Array.prototype.forEach = function (fun, that){
-            var i, n;
-            for (i = 0, n = this.length; i < n; i+= 1) {
-                if (this[i] !== undefined) {
-                    fun.call(that, this[i], i, this);
-                }
-            }
-        };
     }
 
     function updateArticle(new_pars){
