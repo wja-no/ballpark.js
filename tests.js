@@ -7,5 +7,5 @@ TESTRUNNER.data = {
    fonts: ["local-base64"],
   custom_font: ["full", "subset"],
   images: ["avatars", "1136-pixel-image","2880-pixel-image"],
-  libraries: [, "jquery-1-UI-local", "jquery-1-local", "jquery-2-local"]
+  libraries: [, "jquery-1-UI", "jquery-1", "jquery-2"]
 }
