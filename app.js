@@ -72,88 +72,14 @@
         new_pars.forEach(function(par){ article.appendChild(par); });
     }
 
-    function postResult(inner_window) {
-        var timing = inner_window.performance.timing,
-            difference = timing.loadEventEnd - timing.requestStart;
-        inner_window.parent.postMessage(difference, "*");
-    }
-
-    function postIfSet() {
-        var timing = inner_window.performance.timing;
-        if (timing.loadEventEnd === 0){
-            setTimeout(postIfSet, 10);
-        }
-        else {
-            postResult(inner_window);
-        }
-    }
-
-    function createBoundRunner(iframe, window) {
-
-        var current_test, // This stores the currently running test category (string).
-            finalize, // A placeholder for callback function to be called when testing is complete.
-            queue, // The queue of tests
-            reporter, // A placeholder for the function(X) used to report 'currently running test X of total' 
-            result; // A placeholder for the result
-
-        function testNext() {
-            reporter();
-            current_test = queue.shift();
-            iframe.src = "./tests/" + current_test[0]+ "/" + current_test[1] +
-                "/index.html";
-        }
-
-        function iterate() {
-            if (queue.length !== 0) {
-                testNext();
-            }
-            else {
-                window.removeEventListener("message", catchMessage, false)
-                    finalize(result);
-            }
-        }
-
-        function catchMessage(message) {
-            result[current_test[0]][current_test[1]].push(message.data);
-            iterate();
-        }
-
-        window.addEventListener("message", catchMessage, false);
-        iframe.onload = postIfSet;
-
-        return function(tests, resultContainer, callback)  {
-            queue = tests;
-            finalize = callback;
-            result = resultContainer;
-            reporter = createReport(tests.length);
-            testNext();
-        };
-    }
-
-    function createReport(total_tests){
-        var intro = "Running test ",
-            counter = 0,
-            countptr = text(""), //A pointer to the text node where we set the currently runing testnumber
-            fat_count = makeParent(countptr, 'strong'),
-            copula = " of ",
-            total = makeParent(text(total_tests), 'strong'),
-            period = text("."),
-            par = paragraph(intro, fat_count, copula, total, period);
-
-        updateArticle([par]);
-
-        return function(){
-            counter += 1;
-            countptr.textContent = counter;
-        };
-    }
-
+    // Testrunner functions
+    
     function buildQueueFromProvidedTestObject (data, iterations) {
         var queue = [], i, category;
 
         function wrapCategory(category){
             return function(member){
-                queue.push([category, member]);
+                queue.push({category: category, name: member});
             };
         }
 
@@ -182,12 +108,85 @@
         return results;
     }
 
+    function createReport(total_tests){
+        var intro = "Running test ",
+            counter = 0,
+            countptr = text(""), //A pointer to the text node where we set the currently runing testnumber
+            fat_count = makeParent(countptr, 'strong'),
+            copula = " of ",
+            total = makeParent(text(total_tests), 'strong'),
+            period = text("."),
+            par = paragraph(intro, fat_count, copula, total, period);
+
+        updateArticle([par]);
+
+        return function(){
+            counter += 1;
+            countptr.textContent = counter;
+        };
+    }
+    
+    function postResult(inner_window) {
+        var timing = inner_window.performance.timing,
+            difference = timing.loadEventEnd - timing.requestStart;
+        inner_window.parent.postMessage(difference, "*");
+    }
+
+    function postIfSet() {
+        var timing = inner_window.performance.timing;
+
+        if (timing.loadEventEnd === 0){
+            setTimeout(postIfSet, 10);
+        }
+        else {
+            postResult(inner_window);
+        }
+    }
+
+    function createBoundRunner(iframe, window) {
+
+        var current_test, finalize, queue, reporter, result; 
+
+        function testNext() {
+            reporter();
+            current_test = queue.shift();
+            iframe.src = "./tests/" + current_test.category+ "/" + current_test.name +
+                "/index.html";
+        }
+
+        function iterate() {
+            if (queue.length !== 0) {
+                testNext();
+            }
+            else {
+                window.removeEventListener("message", catchMessage, false);
+                finalize(result);
+            }
+        }
+
+        function catchMessage(message) {
+            result[current_test.category][current_test.name].push(message.data);
+            iterate();
+        }
+
+        window.addEventListener("message", catchMessage, false);
+        iframe.onload = postIfSet;
+
+        return function(tests, resultContainer, callback)  {
+            queue = tests;
+            finalize = callback;
+            result = resultContainer;
+            reporter = createReport(tests.length);
+            testNext();
+        };
+    }
+
     // Data presentation methods
 
     function sum (array) {
         var result = 0, i;
         for(i = 0; i < array.length; i += 1){
-            result += (+array[i]); //If the elements are strings, we coerce them to numbers
+            result += (+array[i]); //If the elements are strings (IE 9), we coerce them to numbers
         }
         return result;
     }
