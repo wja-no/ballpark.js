@@ -1,6 +1,10 @@
 ballpark.js
 ====================
 
+ballpark.js is an in-browser app that gives you a ballpark estimate of how long a commonly used web asset takes to load. Given a queue of HTML files, ballpark.js loads each file into an iframe and logs the relevant Navigation Timing API values when these are set. When the queue is emptied, the user is presented with a table of results. 
+
+Once a testrun is completed, the results are stored in the <code>location.hash</code> property in serialized JSON format. Like [SunSpider](http://www.webkit.org/perf/sunspider/sunspider.html), ballpark.js will recognize a hashed url, and render the corresponding results when the <code>onload</code> event occurs. This way, a URL with results can be passed around for verification and comparison. 
+
 Ballpark.js is MIT-licensed, see LICENSE.txt.
 
 ## How are the results computed?
@@ -40,20 +44,15 @@ Here is a crude heuristic tested on Debian 7.
 2. Set 
 
 ```
-	<Directory /var/www/>
+    <Directory /var/www/>
     ...
     AllowOverride All
 ```
 3. Test your configuration by writing gibberish in the <code>.htaccess</code>-file. This should trigger a 500 internal server error when accessing the project root folder from a browser.
 
-## Weird things
-
-### Why are the custom-font tests base64-encoded?
-
-We were interested in testing the effect of subsetting a font. However, we found that despite having caching disabled, browsers tended not to refetch the font files for each iteration, giving no visible performance difference between the full font and the subset. We believe the base64-encoded versions illustrate the difference better.
-
 ## Roadmap
 
 In the future, we want
+
 * A deployment script that automatically creates <code>TESTRUNNER.data</code> from the directory structure in <code>/tests</code>.
 * Enable the user to cherry-pick which tests are run via a checkbox in the browser, and let the user decide the number of iterations per test.
