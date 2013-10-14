@@ -281,7 +281,7 @@
     }
 
     function pushResultToHistory(result){
-        window.location.hash = encodeURIcomponent(JSON.stringify(result));
+        window.location.hash = encodeURIComponent(JSON.stringify(result));
         present(result);
     }
 
