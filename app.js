@@ -320,7 +320,7 @@
     window.onload = function () {
 
         if (location.hash !== "") 
-            present (JSON.parse(String.prototype.slice.call(location.hash, 1)));
+            present (JSON.parse(decodeURIComponent(String.prototype.slice.call(location.hash, 1))));
     }
 
     inner_window.domain = document.domain; 
